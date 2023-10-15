@@ -1,0 +1,10 @@
+name: cgdl
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - pytorch::pytorch=2.1.0
+  - pytorch::torchvision=0.16.0
+  - pytorch::pytorch-cuda=12.1
+  - conda-forge::python=3.11.6
