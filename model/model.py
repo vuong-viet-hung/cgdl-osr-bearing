@@ -81,13 +81,15 @@ class Conv3x3(torch.nn.Module):
         self,
         in_channels: int,
         out_channels: int,
-        activation: torch.nn.Module = torch.nn.ReLU()
+        activation: torch.nn.Module | None = None
     ) -> None:
         super().__init__()
         self.conv = torch.nn.Conv2d(
             in_channels, out_channels, kernel_size=3, padding=1
         )
-        self.activation = activation
+        self.activation = (
+            torch.nn.ReLU() if activation is None else activation
+        )
 
     def forward(self, inputs: torch.FloatTensor) -> torch.FloatTensor:
         return self.activation(self.conv(inputs))
