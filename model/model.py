@@ -43,7 +43,7 @@ class Encoder(torch.nn.Module):
         flatten = self.flatten(pool2)
         mean = self.fc1(flatten)
         logvar = self.fc2(flatten)
-        return mean, logvar  # type: ignore
+        return mean, logvar
 
 
 class Decoder(torch.nn.Module):
