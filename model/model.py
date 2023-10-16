@@ -11,10 +11,10 @@ class VAE(torch.nn.Module):
     def forward(
         self, inputs: torch.FloatTensor
     ) -> tuple[torch.FloatTensor, torch.FloatTensor, torch.FloatTensor]:
-        mean, var = self.encoder(inputs)
-        latent = random_sample(mean, var.abs())
+        mean, logvar = self.encoder(inputs)
+        latent = random_sample(mean, logvar)
         outputs = self.decoder(latent)
-        return outputs, mean, var
+        return outputs, mean, logvar
 
 
 class Encoder(torch.nn.Module):
@@ -42,8 +42,8 @@ class Encoder(torch.nn.Module):
         pool2 = self.pool2(conv2_2)
         flatten = self.flatten(pool2)
         mean = self.fc1(flatten)
-        var = self.fc2(flatten)
-        return mean, var  # type: ignore
+        logvar = self.fc2(flatten)
+        return mean, logvar  # type: ignore
 
 
 class Decoder(torch.nn.Module):
@@ -79,8 +79,8 @@ def conv3x3(in_channels: int, out_channels: int) -> torch.nn.Conv2d:
 
 @torch.no_grad()
 def random_sample(
-    mean: torch.FloatTensor, var: torch.FloatTensor
+    mean: torch.FloatTensor, logvar: torch.FloatTensor
 ) -> torch.FloatTensor:
-    std = var.sqrt()
+    std = logvar.exp().sqrt()
     latent = torch.normal(mean, std)
     return latent  # type: ignore
