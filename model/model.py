@@ -58,8 +58,9 @@ class Decoder(torch.nn.Module):
         self.deconv1_2 = Conv3x3(in_channels=32, out_channels=32)
         self.upsample2 = torch.nn.Upsample(scale_factor=2, mode="bilinear")
         self.deconv2_1 = Conv3x3(in_channels=32, out_channels=3)
-        self.deconv2_2 = torch.nn.Conv2d(
-            in_channels=3, out_channels=out_channels, kernel_size=3, padding=1
+        activation = torch.nn.Sigmoid()
+        self.deconv2_2 = Conv3x3(
+            in_channels=3, out_channels=out_channels, activation=activation
         )
 
     def forward(self, inputs: torch.FloatTensor) -> torch.FloatTensor:
@@ -76,12 +77,17 @@ class Decoder(torch.nn.Module):
 
 class Conv3x3(torch.nn.Module):
 
-    def __init__(self, in_channels: int, out_channels: int) -> None:
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        activation: torch.nn.Module = torch.nn.ReLU()
+    ) -> None:
         super().__init__()
         self.conv = torch.nn.Conv2d(
             in_channels, out_channels, kernel_size=3, padding=1
         )
-        self.relu = torch.nn.ReLU()
+        self.activation = activation
 
     def forward(self, inputs: torch.FloatTensor) -> torch.FloatTensor:
-        return self.relu(self.conv(inputs))
+        return self.activation(self.conv(inputs))
