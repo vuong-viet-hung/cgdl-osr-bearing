@@ -13,8 +13,7 @@ class VAE(torch.nn.Module):
     ) -> tuple[torch.FloatTensor, torch.FloatTensor, torch.FloatTensor]:
         mean, var = self.encoder(inputs)
         std = var.sqrt()
-        eps = torch.randn_like(mean)
-        latent = mean + std * eps
+        latent = torch.normal(mean, std)
         outputs = self.decoder(latent)
         return outputs, mean, var
 
