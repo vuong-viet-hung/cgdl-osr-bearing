@@ -12,7 +12,7 @@ class VAE(torch.nn.Module):
         self, inputs: torch.FloatTensor
     ) -> tuple[torch.FloatTensor, torch.FloatTensor, torch.FloatTensor]:
         mean, var = self.encoder(inputs)
-        latent = random_sample(mean, var)
+        latent = random_sample(mean, var.abs())
         outputs = self.decoder(latent)
         return outputs, mean, var
 
@@ -42,7 +42,7 @@ class Encoder(torch.nn.Module):
         pool2 = self.pool2(conv2_2)
         flatten = self.flatten(pool2)
         mean = self.fc1(flatten)
-        var = torch.nn.functional.softplus(self.fc2(flatten))
+        var = self.fc2(flatten)
         return mean, var  # type: ignore
 
 
