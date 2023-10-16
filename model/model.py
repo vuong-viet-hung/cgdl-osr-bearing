@@ -29,7 +29,10 @@ class Encoder(torch.nn.Module):
         self.pool2 = torch.nn.MaxPool2d(kernel_size=2)
         self.flatten = torch.nn.Flatten()
         self.fc1 = torch.nn.Linear(64 * 8 * 8, out_features)
-        self.fc2 = torch.nn.Linear(64 * 8 * 8, out_features)
+        self.fc2 = torch.nn.Sequential(
+            torch.nn.Linear(64 * 8 * 8, out_features),
+            torch.nn.Softplus(),
+        )
 
     def forward(
         self, inputs: torch.FloatTensor
@@ -101,6 +104,6 @@ class ConvSigmoid(torch.nn.Module):
 def random_sample(
     mean: torch.FloatTensor, var: torch.FloatTensor
 ) -> torch.FloatTensor:
-    std = var.abs().sqrt()
+    std = var.sqrt()
     latent = torch.normal(mean, std)
     return latent  # type: ignore
