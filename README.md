@@ -11,7 +11,7 @@ Create the ```cgdl``` project environment and and install dependencies.
 ```commandline
 conda env create -f environment.yml
 ```
-After ```cgdl``` environment is created, activate the environment
+After ```cgdl``` environment is created, activate the environment.
 ```commandline
 conda activate cgdl
 ```
