@@ -12,7 +12,7 @@ def main() -> None:
     parser.add_argument("--data-dir", type=Path, default="data")
     parser.add_argument("--device", type=str, default=default_device)
     parser.add_argument("--batch-size", type=int, default=32)
-    parser.add_argument("--num_epochs", type=int, default=100)
+    parser.add_argument("--num-epochs", type=int, default=100)
     parser.add_argument("--lr", type=float, default=1e-3)
     args = parser.parse_args()
 
