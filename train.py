@@ -20,7 +20,7 @@ def main() -> None:
     print(model)
     with torch.no_grad():
         inputs = torch.zeros(1, 1, 32, 32, device=args.device)
-        outputs, mean, var = model(inputs)
+        outputs, mean, logvar = model(inputs)
     print(outputs.shape)
 
 
