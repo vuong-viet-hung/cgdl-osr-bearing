@@ -2,7 +2,6 @@ import torch
 
 
 class VAE(torch.nn.Module):
-
     def __init__(self, in_channels: int, latent_dim: int) -> None:
         super().__init__()
         self.encoder = Encoder(in_channels, latent_dim)
@@ -18,7 +17,6 @@ class VAE(torch.nn.Module):
 
 
 class Encoder(torch.nn.Module):
-
     def __init__(self, in_channels: int, out_features: int) -> None:
         super().__init__()
         self.conv1_1 = ConvReLU(in_channels, out_channels=32)
@@ -47,7 +45,6 @@ class Encoder(torch.nn.Module):
 
 
 class Decoder(torch.nn.Module):
-
     def __init__(self, in_features: int, out_channels: int) -> None:
         super().__init__()
         self.fc = torch.nn.Linear(in_features, 64 * 8 * 8)
@@ -72,12 +69,9 @@ class Decoder(torch.nn.Module):
 
 
 class ConvReLU(torch.nn.Module):
-
     def __init__(self, in_channels: int, out_channels: int) -> None:
         super().__init__()
-        self.conv = torch.nn.Conv2d(
-            in_channels, out_channels, kernel_size=3, padding=1
-        )
+        self.conv = torch.nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
         self.relu = torch.nn.ReLU()
 
     def forward(self, inputs: torch.FloatTensor) -> torch.FloatTensor:
@@ -87,12 +81,9 @@ class ConvReLU(torch.nn.Module):
 
 
 class ConvSigmoid(torch.nn.Module):
-
     def __init__(self, in_channels: int, out_channels: int) -> None:
         super().__init__()
-        self.conv = torch.nn.Conv2d(
-            in_channels, out_channels, kernel_size=3, padding=1
-        )
+        self.conv = torch.nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
         self.sigmoid = torch.nn.Sigmoid()
 
     def forward(self, inputs: torch.FloatTensor) -> torch.FloatTensor:
