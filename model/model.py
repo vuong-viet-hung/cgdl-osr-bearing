@@ -105,6 +105,7 @@ class ConvSigmoid(torch.nn.Module):
 def random_sample(
     mean: torch.FloatTensor, logvar: torch.FloatTensor
 ) -> torch.FloatTensor:
-    std = logvar.exp().sqrt()
+    var = logvar.exp()
+    std = var.sqrt()
     latent = torch.normal(mean, std)
     return latent  # type: ignore
