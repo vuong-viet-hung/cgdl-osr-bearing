@@ -1,7 +1,22 @@
-# CGDL-for-Open-Set-Recognition
-Code for CVPR2020 paper: Conditional Gaussian Distribution Learning for Open Set Recognition: https://arxiv.org/abs/2003.08823
-
-pytorch 1.4, python 3.6, ubuntu 16.04
-
-For training, run lvae_train.py file;
-For testing, run qmv.py file.
+# Open-Set Recognition on CWRU Bearing Dataset 
+# (Work in Progress)
+## Introduction
+## Prerequisites
+- CUDA-capable GPU
+- ```conda``` package manager
+- Dependencies listed in ```environment.yml```
+## Create and activate the environment
+The project is managed using ```conda```. To have it installed, follow the [this](https://docs.conda.io/projects/miniconda/en/latest/) instruction. \
+Create the ```cgdl``` project environment and and install dependencies for CUDA version.
+```commandline
+conda env create -f environment.yml
+```
+After ```cgdl``` environment is created, activate the environment
+```commandline
+conda activate cgdl
+```
+The environment must be activated before any ```python``` commands are executed. \
+Deactivate the environment upon finish.
+```commandline
+conda deactivate
+```
