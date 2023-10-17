@@ -1,20 +1,26 @@
-import torch
-
+from pathlib import Path
 from argparse import ArgumentParser
+
+import torch
 
 from model import VAE
 
 
-@torch.no_grad()
 def main() -> None:
+    default_device = "cuda" if torch.cuda.is_available() else "cpu"
     parser = ArgumentParser()
+    parser.add_argument("--data-dir", type=Path, default="data")
+    parser.add_argument("--device", type=str, default=default_device)
+    parser.add_argument("--batch-size", type=int, default=32)
+    parser.add_argument("--num_epochs", type=int, default=100)
+    parser.add_argument("--lr", type=float, default=1e-3)
     args = parser.parse_args()
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = VAE(in_channels=1, latent_dim=10).to(device)
+    model = VAE(in_channels=1, latent_dim=10).to(args.device)
     print(model)
-    inputs = torch.zeros(1, 1, 32, 32, device=device)
-    outputs, mean, var = model(inputs)
+    with torch.no_grad():
+        inputs = torch.zeros(1, 1, 32, 32, device=args.device)
+        outputs, mean, var = model(inputs)
     print(outputs.shape)
 
 
