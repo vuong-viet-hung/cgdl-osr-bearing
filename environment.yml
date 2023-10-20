@@ -8,4 +8,9 @@ dependencies:
   - pytorch::torchvision=0.16.0
   - pytorch::pytorch-cuda=12.1
   - conda-forge::python=3.11.6
-  - conda-forge::scipy
+  - conda-forge::numpy=1.26.0
+  - conda-forge::scipy=1.11.3
+  - conda-forge::black=23.9.1
+  - conda-forge::mypy=1.6.0
+  - conda-forge::pylint=3.0.1
+  - conda-forge::pytest=7.4.2
