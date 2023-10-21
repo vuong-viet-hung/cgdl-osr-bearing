@@ -154,7 +154,7 @@ class CWRUBearing(torch.utils.data.Dataset):
         load = int(match.group(4))
         motor_speed = self.motor_speeds[load]
         sampling_freq = 12000 if sampling_freq == "12k" else 48000
-        self.nperseg = sampling_freq * 60 // motor_speed  # 62
+        self.nperseg = sampling_freq * 60 // motor_speed
         self.noverlap = self.nperseg - self.segment_length // 30
         self.transform = transform
 
