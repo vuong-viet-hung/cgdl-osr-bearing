@@ -148,8 +148,6 @@ class CWRUBearing(torch.utils.data.Dataset):
         sampling_freq = 12000 if sampling_freq == "12k" else 48000
         self.segment_length = sampling_freq * 60 // motor_speed
         self.num_segments = len(signal) // self.segment_length
-        self.nperseg = self.segment_length // 4
-        self.noverlap = int(self.nperseg * 0.75)
         self.transform = transform
 
     def __len__(self) -> int:
@@ -160,7 +158,7 @@ class CWRUBearing(torch.utils.data.Dataset):
         signal = data[self.signal_key].squeeze()
         segment = signal[self.segment_length * idx : self.segment_length * (idx + 1)]
         *_, spectrogram = scipy.signal.stft(
-            segment, nperseg=self.nperseg, noverlap=self.noverlap
+            segment, nperseg=self.segment_length, noverlap=self.segment_length * 3 // 4
         )
         spectrogram = np.abs(spectrogram)
         spectrogram = self.transform(spectrogram)
