@@ -2,7 +2,9 @@ from pathlib import Path
 from argparse import ArgumentParser
 
 import torch
+import matplotlib.pyplot as plt
 
+from dataloader import cwru
 from model import VAE
 
 
@@ -15,6 +17,13 @@ def main() -> None:
     parser.add_argument("--num-epochs", type=int, default=100)
     parser.add_argument("--lr", type=float, default=1e-3)
     args = parser.parse_args()
+
+    train_dl, test_dl, val_dl = cwru.make_dataloaders(
+        args.data_dir, "12k_DE", args.batch_size
+    )
+    train_iter = iter(train_dl)
+    spectrogram_batch, target_batch = next(train_iter)
+    print(spectrogram_batch.shape)
 
     model = VAE(in_channels=1, latent_dim=10).to(args.device)
     print(model)
