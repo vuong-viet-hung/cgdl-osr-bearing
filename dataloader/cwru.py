@@ -54,14 +54,9 @@ def make_datasets(
     train_paths, test_paths, val_paths = split_data_paths(
         data_paths, test_size=0.1, val_size=0.1, random_state=random_state
     )
-    transforms = [
-        torchvision.transforms.ToTensor(),
-        torchvision.transforms.Resize((32, 32), antialias=True),
-    ]
-    transform = torchvision.transforms.Compose(transforms)
-    train_ds = make_dataset(train_paths, subset, transform)
-    test_ds = make_dataset(test_paths, subset, transform)
-    val_ds = make_dataset(val_paths, subset, transform)
+    train_ds = make_dataset(train_paths, subset)
+    test_ds = make_dataset(test_paths, subset)
+    val_ds = make_dataset(val_paths, subset)
     return train_ds, test_ds, val_ds
 
 
@@ -88,19 +83,19 @@ def split_data_paths(
     return train_paths, test_paths, val_paths
 
 
-def make_dataset(
-    data_paths: list[Path],
-    subset: str,
-    transform: Callable[[np.ndarray], torch.FloatTensor],
-) -> torch.utils.data.ConcatDataset:
+def make_dataset(data_paths: list[Path], subset: str) -> torch.utils.data.ConcatDataset:
+    transforms = [
+        torchvision.transforms.ToTensor(),
+        torchvision.transforms.Resize((32, 32), antialias=True),
+    ]
+    transform = torchvision.transforms.Compose(transforms)
     dataset = torch.utils.data.ConcatDataset(
         CWRUBearing(data_path, subset, transform) for data_path in data_paths
     )
     min_value, max_value = find_min_max(dataset)
-    transforms = [
-        transform,
-        torchvision.transforms.Normalize(min_value, max_value - min_value),
-    ]
+    transforms.append(
+        torchvision.transforms.Normalize(min_value, max_value - min_value)
+    )
     transform = torchvision.transforms.Compose(transforms)
     dataset = torch.utils.data.ConcatDataset(
         CWRUBearing(data_path, subset, transform) for data_path in data_paths
@@ -131,7 +126,6 @@ class CWRUBearing(torch.utils.data.Dataset):
     )
     faults = ["Normal", "B", "IR", "OR"]
     motor_speeds = [1797, 1772, 1750, 1730]
-    segment_lengths = {"12k": 1024, "48k": 4096}
 
     def __init__(
         self,
@@ -147,15 +141,15 @@ class CWRUBearing(torch.utils.data.Dataset):
             key for key in data.keys() if key.endswith(f"{end}_time")
         ]
         signal = data[self.signal_key].squeeze()
-        self.segment_length = self.segment_lengths[sampling_freq]
-        self.num_segments = len(signal) // self.segment_length
         match = self.filename_regex.fullmatch(data_path.name)
         self.fault = match.group(1)
         load = int(match.group(4))
         motor_speed = self.motor_speeds[load]
         sampling_freq = 12000 if sampling_freq == "12k" else 48000
-        self.nperseg = sampling_freq * 60 // motor_speed
-        self.noverlap = self.nperseg - self.segment_length // 30
+        self.segment_length = sampling_freq * 60 // motor_speed
+        self.num_segments = len(signal) // self.segment_length
+        self.nperseg = self.segment_length // 4
+        self.noverlap = int(self.nperseg * 0.75)
         self.transform = transform
 
     def __len__(self) -> int:
