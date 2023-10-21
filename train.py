@@ -2,7 +2,6 @@ from pathlib import Path
 from argparse import ArgumentParser
 
 import torch
-import matplotlib.pyplot as plt
 
 from dataloader import cwru
 from model import VAE
